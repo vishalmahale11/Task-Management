@@ -1,0 +1,13 @@
+.processingmaincontainer{
+    height: 75vh;
+    width: 56%;
+    border: 1px solid;
+    filter: drop-shadow(2px 0px 9px rgb(200, 197, 197));
+    background-color: #2a2b2d;
+    border-radius: 7px;
+}
+
+.horizontalLine{
+    border: 0.1px solid #55565a;
+    position: sticky;
+}
