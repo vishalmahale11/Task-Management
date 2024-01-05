@@ -98,6 +98,8 @@ input::placeholder {
   width: 98%;
   height: 25vh;
   border: 1px solid;
+  resize: none;
+  padding: 3px;
 }
 
 .btn {

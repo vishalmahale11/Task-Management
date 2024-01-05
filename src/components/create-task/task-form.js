@@ -1,42 +1,67 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import styles from "../../styles/create-task-css/task-form.module.css";
 
 const TaskForm = () => {
   const [showForm, setShowForm] = useState(false);
-  const [taskDetails, setTaskDetails] = useState({
-    taskname: "",
-    category: "added",
+  const categoryRef = useRef(null);
+  const [query, setQuery] = useState({
     description: "",
-    priority: "high",
+    priority: "",
+    id: null,
+    taskname: "",
   });
 
-  const handleTaskDetailsChange = (field, value) => {
-    setTaskDetails((prevTaskDetails) => ({
-      ...prevTaskDetails,
-      [field]: value,
-    }));
+  const [columns, setColumns] = useState([]);
+
+  function generateUniqueId() {
+    const timestamp = new Date().getTime();
+    const randomNum = Math.floor(Math.random() * 1000000);
+    const uniqueId = `${timestamp}-${randomNum}`;
+    return uniqueId;
+  }
+
+  const handleTaskDetailsChange = (name, value) => {
+    setQuery((prev) => {
+      return {
+        ...prev,
+        [name]: value,
+      };
+    });
   };
 
-  const handleTaskSubmit = () => {
-    if (!taskDetails.taskname.trim()) {
-      alert('Please Write a task name')
-      return;
-    }
-  
+  const handleTaskSubmit = (e) => {
+    e.preventDefault();
+
+    const newTask = { ...query, id: generateUniqueId() };
+    const categoryValue = categoryRef.current.value;
+
     const storedTasks = JSON.parse(localStorage.getItem("tasks")) || [];
-    const newTasks = [...storedTasks, taskDetails];
-    console.log(newTasks, "newTasks");
-    localStorage.setItem("tasks", JSON.stringify(newTasks));
-  
-    setTaskDetails({
-      taskname: "",
-      category: "added",
+
+    const categoryIndex = storedTasks.findIndex(
+      (column) => column.title === categoryValue
+    );
+
+    if (categoryIndex !== -1) {
+      storedTasks[categoryIndex].rows.push(newTask);
+    } else {
+      storedTasks.push({
+        id: generateUniqueId(),
+        title: categoryValue,
+        rows: [newTask],
+      });
+    }
+
+    localStorage.setItem("tasks", JSON.stringify(storedTasks));
+    window.location.reload();
+
+    setQuery({
       description: "",
-      priority: "high",
+      priority: "",
+      id: null,
+      taskname: "",
     });
     setShowForm(false);
   };
-  
 
   return (
     <div className={styles.formcontainer}>
@@ -53,42 +78,48 @@ const TaskForm = () => {
       </div>
       {showForm && (
         <div className={styles.taskInputContainer}>
-          <form>
+          <form onSubmit={handleTaskSubmit}>
             <input
               className={styles.inputBox}
+              name={"taskname"}
               type="text"
               placeholder="Write your task name"
-              value={taskDetails.taskname}
+              value={query.taskname}
               onChange={(e) =>
-                handleTaskDetailsChange("taskname", e.target.value)
+                handleTaskDetailsChange(e.target.name, e.target.value)
               }
+              required
             />
 
             <div className={styles.selectioncontainer}>
               <div className={styles.categorycontainer}>
                 <label>Category:</label>
                 <select
+                  ref={categoryRef}
                   className={styles.selectionoption}
-                  value={taskDetails.category}
-                  onChange={(e) =>
-                    handleTaskDetailsChange("category", e.target.value)
-                  }
+                  defaultValue="Added"
+                  required
                 >
-                  <option value="added">Added</option>
-                  <option value="started">Started</option>
-                  <option value="completed">Completed</option>
+                  <option value="Added" defaultChecked>
+                    Added
+                  </option>
+                  <option value="Started">Started</option>
+                  <option value="Completed">Completed</option>
                 </select>
               </div>
 
               <div className={styles.categorycontainer}>
                 <label>Priority:</label>
                 <select
+                  name={"priority"}
                   className={styles.selectionoption}
-                  value={taskDetails.priority}
+                  value={query.priority}
                   onChange={(e) =>
-                    handleTaskDetailsChange("priority", e.target.value)
+                    handleTaskDetailsChange(e.target.name, e.target.value)
                   }
+                  required
                 >
+                  <option value="">Select</option>
                   <option value="high">High</option>
                   <option value="medium">Medium</option>
                   <option value="low">Low</option>
@@ -100,15 +131,18 @@ const TaskForm = () => {
             <div>
               <textarea
                 className={styles.textarea}
+                name={"description"}
                 placeholder="Write your task description"
-                value={taskDetails.description}
+                value={query.description}
                 onChange={(e) =>
-                  handleTaskDetailsChange("description", e.target.value)
+                  handleTaskDetailsChange(e.target.name, e.target.value)
                 }
               />
             </div>
+            <button className={styles.btn} type="submit">
+              Submit
+            </button>
           </form>
-          <button className={styles.btn} onClick={handleTaskSubmit}>Submit</button>
         </div>
       )}
     </div>

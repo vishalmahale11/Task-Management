@@ -9,11 +9,11 @@ const Greeting = () => {
       const currentHour = currentDate.getHours();
 
       if (currentHour >= 5 && currentHour < 12) {
-        setGreeting('Good Morning');
+        setGreeting('Hello, Good Morning Admin 👋');
       } else if (currentHour >= 12 && currentHour < 18) {
-        setGreeting('Good Afternoon');
+        setGreeting('Hello, Good Afternoon Admin 👋');
       } else {
-        setGreeting('Good Evening');
+        setGreeting('Hello, Good Evening Admin 👋');
       }
     };
 
