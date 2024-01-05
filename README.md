@@ -56,7 +56,8 @@ task-manager/
 3. CSS
 4. External Library (react-dnd, react-dnd-html5-backend)
 
-### Hosted on Github pages
+### Hosted on Netlify App
+https://task-management-data-seers.netlify.app/
 
 # Some Internal Pics
 ![image](https://github.com/vishalmahale11/Task-Management/assets/101392797/3c075707-26f7-48c0-8f08-7ffefa53810a)
