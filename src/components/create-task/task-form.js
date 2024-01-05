@@ -11,8 +11,6 @@ const TaskForm = () => {
     taskname: "",
   });
 
-  const [columns, setColumns] = useState([]);
-
   function generateUniqueId() {
     const timestamp = new Date().getTime();
     const randomNum = Math.floor(Math.random() * 1000000);
