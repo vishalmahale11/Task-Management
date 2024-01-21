@@ -8,6 +8,13 @@ const Row = ({ id, taskname, priority, description }) => {
     item: { id },
   });
 
+  const handleEdit = (id, taskname, priority, description) => {
+    console.log({id, taskname, priority, description}, "EDIT" );
+    localStorage.setItem("edit", JSON.stringify({id, taskname, priority, description}));
+    window.location.reload();
+  }
+
+
   return (
     <div ref={drag} className={styles.row}>
       <div>
@@ -25,7 +32,8 @@ const Row = ({ id, taskname, priority, description }) => {
         <div className={styles.tasknamediv}>{taskname}</div>
       </div>
       <div className={styles.descdiv}>{description}</div>
-    </div>
+      <button onClick={() => handleEdit(id, taskname, priority, description)}>Edit</button>
+    </div> 
   );
 };
 

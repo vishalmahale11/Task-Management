@@ -11,6 +11,7 @@ const ProcessingTaskview = () => {
   const [dummyTask, setDummyTask] = useState(
     !tasksData || tasksData.length === 0
   );
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
   useEffect(() => {
     const handleStorageChange = () => {
@@ -53,10 +54,25 @@ const ProcessingTaskview = () => {
     setTasksData(updatedColumns);
   };
 
+  const handleOnchange = (e) => {
+    let searchText = e.target.value.toLowerCase();
+    let filterData = tasksData.map((colum) => {
+
+      const filterRows = colum.rows.filter((rows) => 
+       rows.taskname.toLowerCase().includes(searchText) 
+      )
+      return {...colum, rows: filterRows};
+    })
+    setFilteredTasks(filterData);
+  }
+
   return (
     <div className={styles.processingmaincontainer}>
       <div>
         <h3>Kanban View</h3>
+      </div>
+      <div>
+        <input type="text" placeholder="search"  onChange={(e) => handleOnchange(e)}/>
       </div>
       <div className={styles.horizontalLine}></div>
 
@@ -76,20 +92,20 @@ const ProcessingTaskview = () => {
         </div>
       ) : (
         <DndProvider backend={HTML5Backend}>
-          <div className={`${styles.columnsContainer} columns-container`}>
-            {tasksData &&
-              Array.isArray(tasksData) &&
-              tasksData?.map((tasks) => (
-                <TaskItem
-                  key={tasks.id}
-                  id={tasks.id}
-                  title={tasks.title}
-                  rows={tasks.rows}
-                  onDrop={handleDrop}
-                />
-              ))}
-          </div>
-        </DndProvider>
+        <div className={`${styles.columnsContainer} columns-container`}>
+          {(filteredTasks.length > 0 ? filteredTasks : tasksData).map(
+            (tasks) => (
+              <TaskItem
+                key={tasks.id}
+                id={tasks.id}
+                title={tasks.title}
+                rows={tasks.rows}
+                onDrop={handleDrop}
+              />
+            )
+          )}
+        </div>
+      </DndProvider>
       )}
     </div>
   );

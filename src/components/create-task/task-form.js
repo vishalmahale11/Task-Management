@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../../styles/create-task-css/task-form.module.css";
 
 const TaskForm = () => {
@@ -60,6 +60,12 @@ const TaskForm = () => {
     });
     setShowForm(false);
   };
+
+  useEffect(() => {
+    let getEditData = JSON.parse(localStorage.getItem("edit"))
+    console.log(getEditData, "getEditData");
+    setQuery(getEditData);
+  }, []);
 
   return (
     <div className={styles.formcontainer}>
